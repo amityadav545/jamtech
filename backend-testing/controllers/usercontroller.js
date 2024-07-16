@@ -35,5 +35,45 @@ try{
         msg:error
     })
 }
+
+exports.updateUserById = async (req, res) => {
+    try {
+        const updatedUser = await User.findByIdAndUpdate(
+            req.params.id,
+            req.body,
+            { new: true, runValidators: true }
+        ).select("-password");
+        if (updatedUser) {
+            res.status(200).json(updatedUser);
+        } else {
+            res.status(401).json({
+                msg: "User not found"
+            });
+        }
+    } catch (error) {
+        res.status(401).json({
+            msg: error
+        });
+    }
+};
+
+exports.deleteUserById = async (req, res) => {
+    try {
+        const deletedUser = await User.findByIdAndDelete(req.params.id).select("-password");
+        if (deletedUser) {
+            res.status(200).json({
+                msg: "User deleted successfully"
+            });
+        } else {
+            res.status(401).json({
+                msg: "User not found"
+            });
+        }
+    } catch (error) {
+        res.status(401).json({
+            msg: error
+        });
+    }
+};
    
 }
